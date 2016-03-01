@@ -1,6 +1,11 @@
 ## original idea & report by Henrik Bengtsson at
 ## https://stat.ethz.ch/pipermail/r-devel/2016-February/072388.html
 
+## This script downloads the list of currently published R packages
+## from CRAN and also looks at all the archived package versions to
+## combine these into a list of all R packages ever published on
+## CRAN with the date of first release.
+
 ## get list of currently available packages on CRAN
 library(XML)
 pkgs <- readHTMLTable(readLines('https://cran.r-project.org/src/contrib/'), which = 1, stringsAsFactors = FALSE)

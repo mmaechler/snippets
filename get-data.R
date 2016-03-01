@@ -1,3 +1,6 @@
+## original idea & report by Henrik Bengtsson at
+## https://stat.ethz.ch/pipermail/r-devel/2016-February/072388.html
+
 ## get list of currently available packages on CRAN
 library(XML)
 pkgs <- readHTMLTable(readLines('https://cran.r-project.org/src/contrib/'), which = 1, stringsAsFactors = FALSE)

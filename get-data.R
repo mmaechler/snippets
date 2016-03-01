@@ -53,3 +53,16 @@ pkgs[is.na(date), date := {
 setorder(pkgs, date, name)
 pkgs[, index := .I]
 pkgs[c(250, 500, (1:9)*1000)]
+
+##            name       date index
+##  1:   polspline 2003-03-19   250
+##  2:     micEcon 2005-02-21   500
+##  3: cairoDevice 2007-03-11  1000
+##  4:     maticce 2009-09-10  2000
+##  5:     SPECIES 2011-04-24  3000
+##  6:       HIBAG 2012-06-21  4000
+##  7:    Rgnuplot 2013-03-20  5000
+##  8:       bilan 2014-02-05  6000
+##  9:      glmvsd 2014-10-22  7000
+## 10:      gkmSVM 2015-06-30  8000
+## 11:     dChipIO 2016-01-12  9000

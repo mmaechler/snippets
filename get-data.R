@@ -66,3 +66,11 @@ pkgs[c(250, 500, (1:9)*1000)]
 ##  9:      glmvsd 2014-10-22  7000
 ## 10:      gkmSVM 2015-06-30  8000
 ## 11:     dChipIO 2016-01-12  9000
+
+## plot trend
+library(ggplot2)
+ggplot(pkgs, aes(date, index)) + geom_line() + theme_bw() +
+    xlab('') + ylab('') + ggtitle('Number of submitted packages to CRAN')
+
+## store report
+write.csv(pkgs, 'pkgs.csv', row.names = FALSE)

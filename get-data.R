@@ -6,9 +6,15 @@
 ## combine these into a list of all R packages ever published on
 ## CRAN with the date of first release.
 
+## CRAN mirror to use
+CRAN_page <- function(...) {
+    file.path('https://cran.rstudio.com/src/contrib', ...)
+}
+
 ## get list of currently available packages on CRAN
 library(XML)
-pkgs <- readHTMLTable(readLines('https://cran.r-project.org/src/contrib/'), which = 1, stringsAsFactors = FALSE)
+pkgs <- readHTMLTable(readLines(CRAN_page()),
+                                which = 1, stringsAsFactors = FALSE)
 
 ## we love data.table
 library(data.table)
@@ -16,18 +22,21 @@ setDT(pkgs)
 
 ## drop directories
 pkgs <- pkgs[Size != '-']
-## drop files that does not seem to be E packages
+## drop files that does not seem to be R packages
 pkgs <- pkgs[grep('tar.gz$', Name)]
 
 ## package name should contain only (ASCII) letters, numbers and dot
 pkgs[, name := sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)]
+
+## grab date from last modified timestamp
 pkgs[, date := as.Date(`Last modified`, format = '%d-%b-%Y')]
 
 ## keep date and name
 pkgs <- pkgs[, .(name, date)]
 
 ## list of packages with at least one archived version
-archives <- readHTMLTable(readLines('https://cran.r-project.org/src/contrib/Archive/'), which = 1, stringsAsFactors = FALSE)
+archives <- readHTMLTable(readLines(CRAN_page('Archive')),
+                          which = 1, stringsAsFactors = FALSE)
 setDT(archives)
 
 ## keep directories
@@ -49,7 +58,7 @@ pkgs[is.na(date), date := {
     cat(name, '\n')
 
     ## download archive page
-    page <- readLines(sprintf('https://cran.rstudio.com/src/contrib/Archive/%s/', name))
+    page <- readLines(CRAN_page('Archive', name))
 
     ## extract date with regexp as HTML parsing can be slow :)
     date <- sub('.*([0-9]{2}-[A-Za-z]{3}-[0-9]{4}).*', '\\1', page[10])

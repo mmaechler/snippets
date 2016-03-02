@@ -29,7 +29,8 @@ pkgs <- pkgs[grep('tar.gz$', Name)]
 pkgs[, name := sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)]
 
 ## grab date from last modified timestamp
-pkgs[, date := as.Date(`Last modified`, format = '%d-%b-%Y')]
+pkgs[, date := as.POSIXct(`Last modified`, format = '%d-%b-%Y %H:%M')]
+pkgs[, date := as.character(date)]
 
 ## keep date and name
 pkgs <- pkgs[, .(name, date)]
@@ -71,16 +72,16 @@ pkgs[is.na(date), c('date', 'versions') := {
     page <- readLines(CRAN_page('Archive', name))
 
     ## extract date with regexp as HTML parsing can be slow :)
-    date <- sub('.*([0-9]{2}-[A-Za-z]{3}-[0-9]{4}).*', '\\1', page[10])
+    date <- sub('.*([0-9]{2}-[A-Za-z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}).*', '\\1', page[10])
 
     ## convert to YYYY-mm-dd format
-    date <- as.Date(date, format = '%d-%b-%Y')
+    date <- as.POSIXct(date, format = '%d-%b-%Y %H:%M')
 
     ## number of previous releases
     archived_versions <- length(page) - 9 - 4
 
     ## return
-    list(date, versions + archived_versions)
+    list(as.character(date), versions + archived_versions)
 
 }, by = name]
 

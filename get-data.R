@@ -16,6 +16,8 @@ setDT(pkgs)
 
 ## drop directories
 pkgs <- pkgs[Size != '-']
+## drop files that does not seem to be E packages
+pkgs <- pkgs[grep('tar.gz$', Name)]
 
 ## package name should contain only (ASCII) letters, numbers and dot
 pkgs[, name := sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)]
@@ -77,8 +79,11 @@ pkgs[c(250, 500, (1:9)*1000)]
 
 ## plot trend
 library(ggplot2)
-ggplot(pkgs, aes(date, index)) + geom_line() + theme_bw() +
-    xlab('') + ylab('') + ggtitle('Number of submitted packages to CRAN')
+ggplot(pkgs, aes(date, index)) + geom_line(size = 2) +
+    scale_x_date(date_breaks = '2 year', date_labels = '%Y') +
+    scale_y_continuous(breaks = seq(0, 9000, 1000)) +
+    xlab('') + ylab('') + theme_bw() +
+    ggtitle('Number of R packages ever published on CRAN')
 
 ## store report
 write.csv(pkgs, 'pkgs.csv', row.names = FALSE)

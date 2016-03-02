@@ -51,13 +51,16 @@ pkgs <- rbind(pkgs,
 ## reorder pkg in alphabet order
 setorder(pkgs, name)
 
-
 ## number of versions released is 1 for published packages
 pkgs[, versions := 0]
 pkgs[!is.na(date), versions := 1]
 
+## mark archived pacakges
+pkgs[, archived := FALSE]
+pkgs[name %in% archives$Name, archived := TRUE]
+
 ## NA date of packages with archived versions
-pkgs[name %in% archives$Name, date := NA]
+pkgs[archived == TRUE, date := NA]
 
 ## lookup release date of first version & number of releases
 pkgs[is.na(date), c('date', 'versions') := {

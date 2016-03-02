@@ -85,26 +85,26 @@ pkgs[is.na(date), c('date', 'versions') := {
 
 }, by = name]
 
-## order by date & alphabet
-setorder(pkgs, date, name)
-pkgs[, index := .I]
-pkgs[c(250, 500, (1:9)*1000)]
-
 ## rename cols
 setnames(pkgs, 'date', 'first_release')
 
-##            name first_release index
-##  1:   polspline    2003-03-19   250
-##  2:     micEcon    2005-02-21   500
-##  3: cairoDevice    2007-03-11  1000
-##  4:     maticce    2009-09-10  2000
-##  5:     SPECIES    2011-04-24  3000
-##  6:       HIBAG    2012-06-21  4000
-##  7:    Rgnuplot    2013-03-20  5000
-##  8:       bilan    2014-02-05  6000
-##  9:      glmvsd    2014-10-22  7000
-## 10:      gkmSVM    2015-06-30  8000
-## 11:     dChipIO    2016-01-12  9000
+## order by date & alphabet
+setorder(pkgs, first_release, name)
+pkgs[, index := .I]
+pkgs[c(250, 500, (1:9)*1000)]
+
+##                 name       first_release versions archived index
+##  1:          pls.pcr 2003-03-31 12:44:00       13     TRUE   250
+##  2:            MEMSS 2005-02-25 08:07:00       12     TRUE   500
+##  3: signalextraction 2007-03-15 18:50:00        4     TRUE  1000
+##  4:         ORIClust 2009-09-18 20:18:00        2     TRUE  2000
+##  5:           MAPLES 2011-04-26 17:36:00        1    FALSE  3000
+##  6:            Bclim 2012-06-22 05:42:00        3     TRUE  4000
+##  7:    RadialPlotter 2013-03-21 06:53:00        9     TRUE  5000
+##  8:             ltsk 2014-02-06 20:35:00        5     TRUE  6000
+##  9:             matR 2014-10-23 09:50:00        1    FALSE  7000
+## 10:            CompR 2015-07-01 14:06:00        1    FALSE  8000
+## 11:       ggcorrplot 2016-01-12 22:12:00        1    FALSE  9000
 
 ## plot trend
 library(ggplot2)

@@ -44,16 +44,23 @@ archives <- archives[grep('/$', Name)]
 
 ## add packages not found in current list of R packages
 archives[, Name := sub('/$', '', Name)]
-pkgs <- rbind(pkgs, archives[!Name %in% pkgs$name, .(name = Name)], fill = TRUE)
-
-## NA date of packages with archived versions
-pkgs[name %in% archives$Name, date := NA]
+pkgs <- rbind(pkgs,
+              archives[!Name %in% pkgs$name, .(name = Name)],
+              fill = TRUE)
 
 ## reorder pkg in alphabet order
 setorder(pkgs, name)
 
-## lookup release date of first version
-pkgs[is.na(date), date := {
+
+## number of versions released is 1 for published packages
+pkgs[, versions := 0]
+pkgs[!is.na(date), versions := 1]
+
+## NA date of packages with archived versions
+pkgs[name %in% archives$Name, date := NA]
+
+## lookup release date of first version & number of releases
+pkgs[is.na(date), c('date', 'versions') := {
 
     cat(name, '\n')
 
@@ -63,8 +70,14 @@ pkgs[is.na(date), date := {
     ## extract date with regexp as HTML parsing can be slow :)
     date <- sub('.*([0-9]{2}-[A-Za-z]{3}-[0-9]{4}).*', '\\1', page[10])
 
-    ## return YYYY-mm-dd format
-    as.Date(date, format = '%d-%b-%Y')
+    ## convert to YYYY-mm-dd format
+    date <- as.Date(date, format = '%d-%b-%Y')
+
+    ## number of previous releases
+    archived_versions <- length(page) - 9 - 4
+
+    ## return
+    list(date, versions + archived_versions)
 
 }, by = name]
 
